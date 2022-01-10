@@ -1,0 +1,14 @@
+[requires]
+gtest/1.10.0
+
+[options]
+gtest:build_gmock=True
+gtest:hide_symbols=False
+gtest:shared=True
+
+[imports]
+bin, *.dll -> ./bin # Copies all dll files from packages bin folder to my "bin" folder
+lib, *.lib* -> ./bin # Copies all dylib files from packages lib folder to my "bin" folder
+
+[generators]
+cmake
