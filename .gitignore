@@ -1,4 +1,2 @@
-docs
-cmake-build-*
-build
-install
+cookiecutter.zip
+cookiecuttercmake

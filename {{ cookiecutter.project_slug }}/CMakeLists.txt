@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(TestCMake
-        VERSION 0.1.0
+project({{ cookiecutter.project_name }}
+        VERSION {{ cookiecutter.project_version }}
         LANGUAGES C CXX)
 
 include(GNUInstallDirs)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD {{ cookiecutter.c_version }})
+set(CMAKE_CXX_STANDARD {{ cookiecutter.cxx_version }})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
