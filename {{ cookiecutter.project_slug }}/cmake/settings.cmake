@@ -3,7 +3,7 @@ option(${PROJECT_NAME}_BUILD_EXECUTABLE "Build the project as an executable, rat
 option(${PROJECT_NAME}_INSTALL "Create installation target for oat++" ON)
 option(${PROJECT_NAME}_PACK "Create package target for oat++" ON)
 
-option(${PROJECT_NAME}_ENABLE_VCPKG "Use Vcpkg" ON)
+option(${PROJECT_NAME}_ENABLE_VCPKG "Use Vcpkg" OFF)
 option(${PROJECT_NAME}_ENABLE_CONAN "Use Conan" ON)
 
 option(${PROJECT_NAME}_ENABLE_UNIT_TESTING "Enable unit tests for the projects (from the `test` subfolder)." ON)
@@ -27,19 +27,6 @@ if (${PROJECT_NAME}_ENABLE_LTO)
         message("LTO finished setting up.")
     else ()
         message(SEND_ERROR "IPO is not supported: ${output}.")
-    endif ()
-endif ()
-
-
-option(${PROJECT_NAME}_ENABLE_CCACHE "Enable the usage of Ccache, in order to speed up rebuild times." ON)
-if (${PROJECT_NAME}_ENABLE_CCACHE)
-    find_program(CCACHE_FOUND ccache)
-    if (CCACHE_FOUND)
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-        message("CCache finished setting up.")
-    else ()
-        message(SEND_ERROR "CCache is not found.")
     endif ()
 endif ()
 
