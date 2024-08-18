@@ -1,9 +1,6 @@
-//
-// Created by zhanghongwei on 2022/1/7.
-//
+#include <iostream>
 
 #include <gtest/gtest.h>
-#include <iostream>
 
 using namespace std;
 using namespace testing;
@@ -11,11 +8,11 @@ using namespace testing;
 class ModuleTest : public testing::Test {
 public:
 
-    virtual void SetUp() {
+    void SetUp() override {
         cout << "SetUp" << endl;
     }
 
-    virtual void TearDown() {
+    void TearDown() override {
         cout << "TearDown" << endl;
     }
 };
@@ -26,11 +23,11 @@ TEST_F(ModuleTest, ble_packet_data) {
 
 class GlobalTest : public testing::Environment {
 public:
-    virtual void SetUp() {
+    void SetUp() override {
         cout << "Global SetUp" << endl;
     }
 
-    virtual void TearDown() {
+    void TearDown() override {
         cout << "Global TearDown" << endl;
     }
 };

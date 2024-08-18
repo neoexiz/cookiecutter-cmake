@@ -9,9 +9,11 @@
 Add `CMAKE_PROJECT_TOP_LEVEL_INCLUDES` definition
 
 ```bash
-cmake -B build -S . -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=make/conan_provider.cmake
+cmake -B build -S . -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=make/conan.cmake
 cmake --build build
 ```
+
+You could update `conan.cmake` from https://github.com/conan-io/cmake-conan/tree/develop2
 
 ## Version
 

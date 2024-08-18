@@ -1,62 +1,92 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 
-project({{ cookiecutter.project_name }}
+project({{ cookiecutter.project_slug }}
         VERSION {{ cookiecutter.project_version }}
         LANGUAGES C CXX)
-
-include(GNUInstallDirs)
 
 set(CMAKE_C_STANDARD {{ cookiecutter.c_version }})
 set(CMAKE_CXX_STANDARD {{ cookiecutter.cxx_version }})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Dependency
+## Dependency
+include(Settings)
+include(Vcpkg)
+include(Doxygen)
 
-include(cmake/settings.cmake)
-include(cmake/vcpkg.cmake)
-include(cmake/doxygen.cmake)
-
-message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
-
-list(APPEND ${PROJECT_NAME}_LIB_SOURCES
-        src/module.c
+## Third ExternalProject
+add_subdirectory(third)
+execute_process(COMMAND ${CMAKE_COMMAND}
+        -B ${CMAKE_CURRENT_SOURCE_DIR}/third/build
+        -S ${CMAKE_CURRENT_SOURCE_DIR}/third
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}
+)
+execute_process(COMMAND ${CMAKE_COMMAND}
+        --build ${CMAKE_CURRENT_SOURCE_DIR}/third/build
 )
 
-add_library(${PROJECT_NAME}_LIB ${${PROJECT_NAME}_LIB_SOURCES})
-target_include_directories(${PROJECT_NAME}_LIB PUBLIC .)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
-list(APPEND ${PROJECT_NAME}_SOURCES
-        src/main.cc
+find_package(gflags REQUIRED)
+find_package(glog REQUIRED)
+
+## Third FetchContent
+include(modules/asio)
+include(modules/libevent)
+
+message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...")
+
+## Library
+add_library(${PROJECT_NAME}_LIB STATIC)
+target_sources(${PROJECT_NAME}_LIB
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/src/module.c
 )
+target_include_directories(${PROJECT_NAME}_LIB
+        PRIVATE
+        ${LIBEVENT_INCLUDE_DIRS}
+)
+target_link_libraries(${PROJECT_NAME}_LIB PRIVATE event_core_static)
 
+## Executable
 if (${PROJECT_NAME}_BUILD_EXECUTABLE)
-    add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+    add_executable(${PROJECT_NAME} misc/empty.cc)
+    target_sources(${PROJECT_NAME}
+            PRIVATE
+            ${PROJECT_SOURCE_DIR}/src/main.cc
+    )
     target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_LIB)
+
+    ## Third
+    target_include_directories(${PROJECT_NAME}
+            PRIVATE
+            $<TARGET_PROPERTY:asio,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+    target_link_libraries(${PROJECT_NAME} glog::glog)
 endif ()
 
 # Test
 if (${PROJECT_NAME}_ENABLE_UNIT_TESTING)
     enable_testing()
-    message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
+    message(STATUS "Build unit tests for the project. Tests should always be found in the test folder")
     add_subdirectory(test)
 endif ()
 
 # INSTALL
 if (${PROJECT_NAME}_INSTALL)
-    include(module_install)
+    include(scripts/install)
 endif ()
 
 # PACK
 if (${PROJECT_NAME}_PACK)
     if (UNIX)
-        message("current platform: Linux ")
+        message(STATUS "Current platform: Linux ")
         set(CPACK_GENERATOR "ZIP")
     elseif (WIN32)
-        message("current platform: Windows ")
+        message(STATUS "Current platform: Windows ")
         set(CPACK_GENERATOR WIX) # Windows GUI pack installer
     else ()
-        message("current platform: Unknown ")
+        message(STATUS "Current platform: Unknown ")
         set(CPACK_GENERATOR "ZIP")
     endif ()
     include(CPack)

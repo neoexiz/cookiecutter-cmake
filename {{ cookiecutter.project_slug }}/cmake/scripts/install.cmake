@@ -1,4 +1,4 @@
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install/")
+include(GNUInstallDirs)
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
@@ -67,5 +67,5 @@ if(${PROJECT_NAME}_GENERATE_EXPORT_HEADER)
     message(STATUS "Generated the export header `${PROJECT_NAME_LOWERCASE}_export.h` and installed it.")
 endif()
 
-message(STATUS "Finished building requirements for installing the package.\n")
+message(STATUS "Finished building requirements for installing the package.")
 
