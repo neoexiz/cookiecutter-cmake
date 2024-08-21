@@ -14,19 +14,22 @@ include(Settings)
 include(Vcpkg)
 include(Doxygen)
 
-## Third ExternalProject
-add_subdirectory(third)
-execute_process(COMMAND ${CMAKE_COMMAND}
-        -B ${CMAKE_CURRENT_SOURCE_DIR}/third/build
-        -S ${CMAKE_CURRENT_SOURCE_DIR}/third
-        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}
-)
-execute_process(COMMAND ${CMAKE_COMMAND}
-        --build ${CMAKE_CURRENT_SOURCE_DIR}/third/build
-)
+if (NOT ${PROJECT_NAME}_ENABLE_CONAN AND NOT ${PROJECT_NAME}_ENABLE_VCPKG)
+    ## Third ExternalProject
+    execute_process(COMMAND ${CMAKE_COMMAND}
+            -B ${PROJECT_SOURCE_DIR}/third/build
+            -S ${PROJECT_SOURCE_DIR}/third
+            -DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}
+    )
+    execute_process(
+            COMMAND ${CMAKE_COMMAND}
+            --build ${PROJECT_SOURCE_DIR}/third/build
+    )
+endif ()
 
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${PROJECT_BINARY_DIR})
 
+set(GFLAGS_USE_TARGET_NAMESPACE ON)
 find_package(gflags REQUIRED)
 find_package(glog REQUIRED)
 
@@ -55,14 +58,18 @@ if (${PROJECT_NAME}_BUILD_EXECUTABLE)
             PRIVATE
             ${PROJECT_SOURCE_DIR}/src/main.cc
     )
-    target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_LIB)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIB)
 
     ## Third
     target_include_directories(${PROJECT_NAME}
             PRIVATE
             $<TARGET_PROPERTY:asio,INTERFACE_INCLUDE_DIRECTORIES>
     )
-    target_link_libraries(${PROJECT_NAME} glog::glog)
+    target_link_directories(${PROJECT_NAME}
+            PRIVATE
+            ${PROJECT_BINARY_DIR}/lib
+    )
+    target_link_libraries(${PROJECT_NAME} PRIVATE gflags::gflags glog::glog)
 endif ()
 
 # Test

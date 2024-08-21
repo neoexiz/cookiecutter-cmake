@@ -2,12 +2,14 @@
 #include "module.h"
 #include "asio.hpp"
 #include "glog/logging.h"
+#include "gflags/gflags.h"
 
-int main() {
-    google::InitGoogleLogging("{{ cookiecutter.project_slug }}");
-    FLAGS_minloglevel = -1;
+int main(int argc, char* argv[]) {
+    FLAGS_minloglevel = 0;
     FLAGS_alsologtostderr = true;
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
+    google::InitGoogleLogging("cookiecuttercmake");
     asio::io_context ioc;
 
     LOG(INFO) << "Hello World!";

@@ -8,7 +8,7 @@
   "configurePresets": [
     {
       "name": "default",
-      "displayName": "Linux (Debug)",
+      "displayName": "Linux (Release)",
       "generator": "Unix Makefiles",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
@@ -16,7 +16,11 @@
           "type": "STRING",
           "value": "cmake/Conan.cmake"
         },
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Release",
+        "{{ cookiecutter.project_slug }}_ENABLE_CONAN": {
+          "type": "BOOL",
+          "value": "ON"
+        }
       }
     },
     {

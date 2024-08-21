@@ -7,7 +7,7 @@
 void module_init(void) {
     struct event_base *base = event_base_new();
 
-    printf("Hello Module!");
+    printf("Hello Module!\n");
 
     event_base_dispatch(base);
     event_base_free(base);
