@@ -7,7 +7,7 @@ if(${PROJECT_NAME}_ENABLE_DOXYGEN)
     find_package(Doxygen
             REQUIRED COMPONENTS dot
             OPTIONAL_COMPONENTS mscgen dia)
-    doxygen_add_docs(doxygen
+    doxygen_add_docs(${PROJECT_NAME}_doxygen
             ${PROJECT_SOURCE_DIR}/src
             COMMENT "Generate doxygen documentation"
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}

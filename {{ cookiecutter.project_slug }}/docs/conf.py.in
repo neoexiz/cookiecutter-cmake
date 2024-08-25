@@ -1,0 +1,5 @@
+project = '${PROJECT_NAME}'
+copyright = ''
+author = ''
+language = '${DOC_LANGUAGE}'
+release = '${PROJECT_VERSION}'

@@ -13,6 +13,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(Settings)
 include(Vcpkg)
 include(Doxygen)
+include(Sphinx)
 
 if (NOT ${PROJECT_NAME}_ENABLE_CONAN AND NOT ${PROJECT_NAME}_ENABLE_VCPKG)
     ## Third ExternalProject
